@@ -1,0 +1,1 @@
+Followed [this](https://css-tricks.com/making-calendars-with-accessibility-and-internationalization-in-mind/) tutorial by Mads Stoumann on how to make a calendar with accessibility and internationalization. 
