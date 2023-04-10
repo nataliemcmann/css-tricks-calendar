@@ -35,7 +35,34 @@ function calendarElement(settings={}) {
                 <li>
                     <abbr title="${name.long}">${name.short}</abbr>
                 </li>`).join('')}
-            </ul>        
+            </ul>
+            <!-- Ordered list of date numbers -->  
+            <ol>
+                <!-- Map through the array of numbers from numberOfDays -->
+                ${[...Array(numberOfDays).keys()].map(i => {
+                    // set current date based off the array index
+                    const cur = newDate(year, month, i + 1);
+                    //set the date number based of the current date
+                    let day = cur.getDay();
+                    //if the day is zero, change it to 7
+                    if (day === 0) { day = 7 };
+                    /* if today should be visible than give list item the class
+                    of today, else no class*/
+                    const today = renderToday && 
+                    (config.today.day === i + 1) ? ' data-today':'';
+                    /*return list item that contains the date number with weekend
+                    class name being determined by a conditional */
+                    return `<li data-day="${day}"${today}${i === 0 ||
+                    day === config.info.firstDay ? 
+                    ` data-weeknumber="${new Intl.NumberFormat(locale).format(getWeek(cur))}` : ''}
+                    ${config.info.weekend.includes(day) ? ` data-weekend` : ''}>
+                        <!-- The time tag contains the date number -->
+                        <time datetime="${year}-${(pad(month))}-${pad(i)}" tabindex="0">
+                        ${new Intl.NumberFormat(locale).format(i + 1)}
+                        </time>
+                    </li>`
+                }).join('')}
+            </ol>      
     
         </div>
         `
@@ -130,6 +157,7 @@ function getWeekNumber(cur) {
     date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
     //create week from the year of the new date on the first month on the 4th day
     const week = new Date(date.getFullYear(), 0, 4);
+
     return 1 + Math.round(
         ((date.getTime() - week.getTime())/ 86400000 - 3 + 
         (week.getDay() + 6) % 7) / 7);
