@@ -160,10 +160,14 @@ function getWeekNumber(cur) {
 
 };
 
-//initialize calendar
+//initialize calendar (having issues with this)
+//grab the app element
 const app = document.getElementById("app");
-console.log(app);
+console.log(app); //this is giving null right now
+/* make a child element inside of the app element and give it the data 
+from app */
 app.innerHTML = calendarElement(app.dataset);
+//if a new lang selection is made from the label, change the calendar
 lang.addEventListener('change', () => {
     document.documentElement.lang = lang.value;
     app.innerHTML = calendarElement(app.dataset)
