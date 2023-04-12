@@ -3,6 +3,12 @@ console.log('script sourced');
 //function for calendar element
 //it will take an object as an argument 
 function calendarElement(settings={}) {
+    /* Padding adds a string to another string so the result matches
+    a desired length.  In this case, because months have at max two 
+    numerical characters, the months 1-9 need a zero before them to 
+    match the spacing of 10-12*/
+    const pad = (val) => (val + 1).toString().padStart(2, '0');
+
     //render function that takes our date and config information
     //as arguments
     const render = (date, locale)  => {
@@ -63,88 +69,77 @@ function calendarElement(settings={}) {
                     </li>`
                 }).join('')}
             </ol>      
-    
         </div>
         `
     };
-};
 
-//helper elements 
+    /* helper function to call all versions of the weekdays (long & short)
+    it takes firstDay from our config.info and the config.locale to determine
+    the names of the days of the week */
+    const weekdays = (firstDay, locale) => {
+        //sets the date to Dec 31 1969 (unclear why)
+        const date = new Date(0);
+        //creates an array with seven indices and maps through it
+        const arr = [...Array(7).keys()].map(i => {
+            //sets day to a new day based on the current index
+            date.setDate(5 + i)
+            return {
+                    //an object is created that contains the 
+                    //full name of the day of the week
+                    long: new Intl.DateTimeFormat([locale], 
+                        { weekday: 'long'.format(date),
+                    //and abbreviated name of the day of the week
+                    short: new Intl.DateTimeFormat([locale], 
+                        { weekday: 'short'}).format(date)
+                })
+            }
+        })
+        //this last loop shifts the first day of the week to the front
+        for (let i = 0; i < 8 - firstDay; i++) arr.splice(0, 0, arr.pop());
+        return arr;
+    }
 
-//create a ref for current date
-const today = new Date();
+    //create a ref for current date
+    const today = new Date();
 
-/* configuration that is combined with settings parameter
-to determine the style of the calendar based on the 
-locale of the html lang tag (if it exists) 
-the lang will determine what style of calendar to render
-(because everywhere has different "starts" to the week) */
-const config = Object.assign(
-    {
-        //grab lang, default to US if none
-        locale: (document.documentElement.getAttribute('lang' || 'en-US')),
-        //get today
-        today: {
-            //get the date
-            day: today.getDate(),
-            //the month
-            month: today.getMonth(),
-            //the year
-            year: today.getFullYear(),
-        }
-    }, settings
-);
+    /* configuration that is combined with settings parameter
+    to determine the style of the calendar based on the 
+    locale of the html lang tag (if it exists) 
+    the lang will determine what style of calendar to render
+    (because everywhere has different "starts" to the week) */
+    const config = Object.assign(
+        {
+            //grab lang, default to US if none
+            locale: (document.documentElement.getAttribute('lang' || 'en-US')),
+            //get today
+            today: {
+                //get the date
+                day: today.getDate(),
+                //the month
+                month: today.getMonth(),
+                //the year
+                year: today.getFullYear(),
+            }
+        }, settings
+    );
 
-//if no date is in the settings object, we render the default date
-const date = config.date ? new Date(config.date) : today;
+    //if no date is in the settings object, we render the default date
+    const date = config.date ? new Date(config.date) : today;
 
-/* Now we implement the international locale api that is built into JS
-in this code block, if config.info does not already exist, we grab the 
-weekInfo from Intl.Locale information based off of the locale that the
-config object grabs
-*/
-if (!config.info) config.info = new Intl.Locale(config.locale).weekInfo || {
-    /* by default we'll set the calendar to USA, meaning the first day 
-    is Sunday */
-    firstDay: 7,
-    //and the weekend is Saturday/Sunday
-    weekend: [6, 7]
-}; 
+    /* Now we implement the international locale api that is built into JS
+    in this code block, if config.info does not already exist, we grab the 
+    weekInfo from Intl.Locale information based off of the locale that the
+    config object grabs
+    */
+    if (!config.info) config.info = new Intl.Locale(config.locale).weekInfo || {
+        /* by default we'll set the calendar to USA, meaning the first day 
+        is Sunday */
+        firstDay: 7,
+        //and the weekend is Saturday/Sunday
+        weekend: [6, 7]
+    }; 
 
-/* Padding adds a string to another string so the result matches
-    a desired length.  In this case, because months have at max two 
-    numerical characters, the months 1-9 need a zero before them to 
-    match the spacing of 10-12*/
-const pad = (val) => (val + 1).toString().padStart(2, '0');
-
-
-/* helper function to call all versions of the weekdays (long & short)
-it takes firstDay from our config.info and the config.locale to determine
-the names of the days of the week */
-const weekdays = (firstDay, locale) => {
-    //sets the date to Dec 31 1969 (unclear why)
-    const date = new Date(0);
-    //creates an array with seven indices and maps through it
-    const arr = [...Array(7).keys()].map(i => {
-        //sets day to a new day based on the current index
-        date.setDate(5 + i)
-        return {
-                //an object is created that contains the 
-                //full name of the day of the week
-                long: new Intl.DateTimeFormat([locale], 
-                    { weekday: 'long'.format(date),
-                //and abbreviated name of the day of the week
-                short: new Intl.DateTimeFormat([locale], 
-                    { weekday: 'short'}).format(date)
-            })
-        }
-    })
-    //this last loop shifts the first day of the week to the front
-    for (let i = 0; i < 8 - firstDay; i++) arr.splice(0, 0, arr.pop());
-    return arr;
-}
-
-/* Helper function to get the numbers of the weeks based off the day numbers*/
+    /* Helper function to get the numbers of the weeks based off the day numbers*/
 function getWeekNumber(cur) {
     /* create a date that contains the milliseconds since the epoch 
      from the cur provided */
@@ -163,7 +158,14 @@ function getWeekNumber(cur) {
         (week.getDay() + 6) % 7) / 7);
 }
 
+};
 
-
-
+//initialize calendar
+const app = document.getElementById("app");
+console.log(app);
+app.innerHTML = calendarElement(app.dataset);
+lang.addEventListener('change', () => {
+    document.documentElement.lang = lang.value;
+    app.innerHTML = calendarElement(app.dataset)
+});
 
