@@ -15,6 +15,7 @@ label {
     repeat(auto-fill, minmax(320px, 1fr)));
     padding: var(--outer-p, 0);
     width: 80%;
+    height: auto;
 }
 
 /* inner element */

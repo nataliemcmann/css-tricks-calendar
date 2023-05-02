@@ -1,4 +1,18 @@
 console.log('script sourced');
+//initialize calendar (having issues with this)
+//grab the app element
+window.onload = () => {
+    const app = document.querySelector('#app');
+    console.log(app); //this is giving null right now
+    /* make a child element inside of the app element and give it the data 
+    from app */
+    app.innerHTML = calendarElement(app.dataset);
+    //if a new lang selection is made from the label, change the calendar
+    lang.addEventListener('change', () => {
+        document.documentElement.lang = lang.value;
+        app.innerHTML = calendarElement(app.dataset)
+    });
+}
 
 //function for calendar element
 //it will take an object as an argument 
@@ -47,7 +61,7 @@ function calendarElement(settings={}) {
                 <!-- Map through the array of numbers from numberOfDays -->
                 ${[...Array(numberOfDays).keys()].map(i => {
                     // set current date based off the array index
-                    const cur = newDate(year, month, i + 1);
+                    const cur = new Date(year, month, i + 1);
                     //set the date number based of the current date
                     let day = cur.getDay();
                     //if the day is zero, change it to 7
@@ -87,13 +101,12 @@ function calendarElement(settings={}) {
                     //an object is created that contains the 
                     //full name of the day of the week
                     long: new Intl.DateTimeFormat([locale], 
-                        { weekday: 'long'.format(date),
+                        { weekday: 'long'}).format(date),
                     //and abbreviated name of the day of the week
                     short: new Intl.DateTimeFormat([locale], 
                         { weekday: 'short'}).format(date)
-                })
-            }
-        })
+                }
+            })
         //this last loop shifts the first day of the week to the front
         for (let i = 0; i < 8 - firstDay; i++) arr.splice(0, 0, arr.pop());
         return arr;
@@ -142,6 +155,7 @@ function calendarElement(settings={}) {
         render(new Date(date.getFullYear(),i, date.getDate()),
         config.locale, date.getMonth())).join('') : 
         render(date, config.locale)
+    }
 
     /* Helper function to get the numbers of the weeks based off the day numbers*/
 function getWeekNumber(cur) {
@@ -160,19 +174,7 @@ function getWeekNumber(cur) {
     return 1 + Math.round(
         ((date.getTime() - week.getTime())/ 86400000 - 3 + 
         (week.getDay() + 6) % 7) / 7);
-}
 };
 
-//initialize calendar (having issues with this)
-//grab the app element
-const app = document.querySelector('#app');
-console.log(app); //this is giving null right now
-/* make a child element inside of the app element and give it the data 
-from app */
-app.innerHTML = calendarElement(app.dataset);
-//if a new lang selection is made from the label, change the calendar
-lang.addEventListener('change', () => {
-    document.documentElement.lang = lang.value;
-    app.innerHTML = calendarElement(app.dataset)
-});
+
 
