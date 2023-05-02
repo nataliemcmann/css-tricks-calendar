@@ -1,19 +1,20 @@
 /* choose language label */
 label {
     background-color: white;
-    margin: 5px;
-    padding: 5px;
+    margin: 10px;
+    padding: 10px;
     border-radius: 5px;
 }
 
 /* outer element */
-.outerWrapper {
-    background: var(--outer-bg, none);
-    display: var(--outer-d, grid);
-    gap: var(--outer-gap, 2.5rem);
-    grid-template-columns: var(--outer-gtc, 
-    repeat(auto-fill, minmax(320px, 1fr)));
-    padding: var(--outer-p, 0);
+#app {
+    display: grid;
+    background-color: #FFF;
+    gap: 2.5rem;
+    grid-template-columns:
+    repeat(auto-fill, minmax(320px, 1fr));
+    margin: 20px;
+    padding: 20px;
     width: 80%;
     height: auto;
 }

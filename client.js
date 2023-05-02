@@ -74,9 +74,8 @@ function calendarElement(settings={}) {
                     class name being determined by a conditional */
                     return `<li data-day="${day}"${today}${i === 0 ||
                     day === config.info.firstDay ? 
-                    ` data-weeknumber="${new Intl.NumberFormat(locale).format(getWeekNumber(cur))}` : ''}
+                    ` data-weeknumber="${new Intl.NumberFormat(locale).format(getWeekNumber(cur))}"` : ''}
                     ${config.info.weekend.includes(day) ? ` data-weekend` : ''}>
-                        <!-- The time tag contains the date number -->
                         <time datetime="${year}-${(pad(month))}-${pad(i)}" tabindex="0">
                         ${new Intl.NumberFormat(locale).format(i + 1)}
                         </time>
