@@ -60,7 +60,7 @@ function calendarElement(settings={}) {
                     class name being determined by a conditional */
                     return `<li data-day="${day}"${today}${i === 0 ||
                     day === config.info.firstDay ? 
-                    ` data-weeknumber="${new Intl.NumberFormat(locale).format(getWeek(cur))}` : ''}
+                    ` data-weeknumber="${new Intl.NumberFormat(locale).format(getWeekNumber(cur))}` : ''}
                     ${config.info.weekend.includes(day) ? ` data-weekend` : ''}>
                         <!-- The time tag contains the date number -->
                         <time datetime="${year}-${(pad(month))}-${pad(i)}" tabindex="0">
@@ -138,6 +138,10 @@ function calendarElement(settings={}) {
         //and the weekend is Saturday/Sunday
         weekend: [6, 7]
     }; 
+    return config.year ? [...Array(12).keys()].map(i => 
+        render(new Date(date.getFullYear(),i, date.getDate()),
+        config.locale, date.getMonth())).join('') : 
+        render(date, config.locale)
 
     /* Helper function to get the numbers of the weeks based off the day numbers*/
 function getWeekNumber(cur) {
@@ -157,12 +161,11 @@ function getWeekNumber(cur) {
         ((date.getTime() - week.getTime())/ 86400000 - 3 + 
         (week.getDay() + 6) % 7) / 7);
 }
-
 };
 
 //initialize calendar (having issues with this)
 //grab the app element
-const app = document.getElementById("app");
+const app = document.querySelector('#app');
 console.log(app); //this is giving null right now
 /* make a child element inside of the app element and give it the data 
 from app */
